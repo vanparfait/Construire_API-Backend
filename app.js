@@ -1,15 +1,9 @@
 const express = require("express");
 
 const app = express();
-const mongoose = require("mongoose");
-
-mongoose
-  .connect(
-    "mongodb+srv://danielle:danielle2023@cluster0.xybqyya.mongodb.net/FOKOU?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
-  .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+const connectDB = require("./config/db");
+//: Importation du routeur Beer
+const beerRoutes = require("./routes/beers");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -28,6 +22,10 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+connectDB();
+
+app.use("/api/beers", beerRoutes);
+
 const User = require("./models/User");
 
 const bcrypt = require("bcrypt");
@@ -38,24 +36,5 @@ const jwt = require("jsonwebtoken");
 const userRoutes = require("./routes/user");
 
 app.use("/api/auth", userRoutes);
-
-app.use((req, res, next) => {
-  console.log("Requête est reçue !");
-  next();
-});
-
-app.use((req, res, next) => {
-  res.status(201);
-  next();
-});
-
-app.use((req, res, next) => {
-  res.json({ message: "La requête a bien été reçue !" });
-  next();
-});
-
-app.use((req, res, next) => {
-  console.log("Réponse envoyée avec succès !");
-});
 
 module.exports = app;
