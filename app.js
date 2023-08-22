@@ -2,8 +2,6 @@ const express = require("express");
 
 const app = express();
 const connectDB = require("./config/db");
-//: Importation du routeur Beer
-const beerRoutes = require("./routes/beers");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -24,17 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-app.use("/api/beers", beerRoutes);
-
 const User = require("./models/User");
 
 const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken");
 
-//: Importation du routeur User
+//: Importation du routeur User et Beer
 const userRoutes = require("./routes/user");
+const beerRoutes = require("./routes/beers");
 
 app.use("/api/auth", userRoutes);
+app.use("/api/beers", beerRoutes);
 
 module.exports = app;
